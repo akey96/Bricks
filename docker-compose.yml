@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    container_name: db
+    image: alvaro-mysql
+    build:
+      dockerfile: Dockerfile
+      context: "$PWD/docker/mysql"
+    env_file: .env
+    ports:
+      - "3306:3306"
+    networks:
+      net:
+    volumes:
+      - "alvaro-db:/var/lib/mysql"
+  php-apache:
+    container_name: php-httpd
+    image: alvaro-php-httpd
+    build:
+      dockerfile: Dockerfile
+      context: "$PWD/docker/apache-php-centos"
+    volumes:
+      - "$PWD/bricks:/var/www/html"
+    ports:
+      - "80:80"
+    networks:
+      net:
+    depends_on:
+      - db
+networks: 
+  net:
+volumes:
+  alvaro-db:
